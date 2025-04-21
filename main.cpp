@@ -70,7 +70,19 @@ void task1() {
 }
 
 void task2() {
-    std::cout << "\n--- Task 2 ---\n";
+    std::cout << "\n--- Task 2: удаление символов c1 ---\n";
+
+    // выделяем память под строку
+    char* buffer = new char[256];
+    std::cout << "Введите строку (до 255 символов):\n";
+    std::cin.getline(buffer, 256);
+
+    // читаем символ c1
+    std::cout << "Введите символ для удаления (c1): ";
+    char c1;
+    std::cin >> c1;
+
+    delete[] buffer;
 }
 
 int main() {
