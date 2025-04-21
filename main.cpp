@@ -7,13 +7,24 @@ void task1() {
     char* buffer = new char[256];
 
     std::cout << "Введите предложение (до 255 символов):\n";
-    // читаем всю строку вместе с пробелами
     std::cin.getline(buffer, 256);
 
-    // пока для проверки просто выводим то, что ввели
-    std::cout << "Вы ввели: " << buffer << "\n";
+    // подсчитаем количество слов
+    int wordCount = 0;
+    bool inWord = false;
 
-    // не забываем освободить память
+    for (char* p = buffer; *p != '\0'; ++p) {
+        if (*p != ' ' && !inWord) {
+            inWord = true;
+            ++wordCount;
+        }
+        else if (*p == ' ' && inWord) {
+            inWord = false;
+        }
+    }
+
+    std::cout << "Количество слов: " << wordCount << "\n";
+
     delete[] buffer;
 }
 
