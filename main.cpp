@@ -111,7 +111,17 @@ void task2() {
     }
     *write = '\0';
 
-    // 4) выводим результат
+    // 4) перевыделяем память под сжатую строку
+    size_t newLen = write - buffer;           // длина получившейся строки
+    char* shrinked = new char[newLen + 1];     // +1 для '\0'
+    for (size_t i = 0; i <= newLen; ++i) {
+        shrinked[i] = buffer[i];
+    }
+    delete[] buffer;                           // удаляем старый буфер
+    buffer = shrinked;                         // теперь buffer указывает на новую строку
+
+
+    // 5) выводим результат
     std::cout << "Результат: " << buffer << "\n";
 
     delete[] buffer;
