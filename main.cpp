@@ -9,10 +9,9 @@ void task1() {
     std::cout << "Введите предложение (до 255 символов):\n";
     std::cin.getline(buffer, 256);
 
-    // подсчитаем количество слов
+    // 1) считаем количество слов
     int wordCount = 0;
     bool inWord = false;
-
     for (char* p = buffer; *p != '\0'; ++p) {
         if (*p != ' ' && !inWord) {
             inWord = true;
@@ -22,8 +21,45 @@ void task1() {
             inWord = false;
         }
     }
-
     std::cout << "Количество слов: " << wordCount << "\n";
+
+    // 2) находим, какое это слово «по счёту»
+    int middle = (wordCount + 1) / 2;  // если слов чётное число, возьмём левое из двух «средних»
+
+    // 3) снова проходим строку, чтобы запомнить границы этого слова
+    int current = 0;
+    char* start = nullptr;
+    char* end = nullptr;
+    inWord = false;
+    for (char* p = buffer; *p != '\0'; ++p) {
+        if (*p != ' ' && !inWord) {
+            inWord = true;
+            ++current;
+            if (current == middle) {
+                start = p;  // начало среднего слова
+            }
+        }
+        else if ((*p == ' ' || *(p + 1) == '\0') && inWord) {
+            if (current == middle && end == nullptr) {
+                // если следующая позиция — '\0', включаем её в конец
+                end = (*p == ' ') ? p : p + 1;
+                break;
+            }
+            inWord = false;
+        }
+    }
+
+    // 4) выводим то, что нашли
+    if (start && end) {
+        std::cout << "Среднее слово: ";
+        for (char* p = start; p != end; ++p) {
+            std::cout << *p;
+        }
+        std::cout << "\n";
+    }
+    else {
+        std::cout << "Не удалось определить среднее слово.\n";
+    }
 
     delete[] buffer;
 }
