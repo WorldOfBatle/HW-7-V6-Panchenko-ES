@@ -1,12 +1,12 @@
 #include <iostream>
 
 void task1() {
-    std::cout << "\n--- Task 1: ввод предложения ---\n";
+    std::cout << "\n--- Task 1: ввод предложения ---\n";
 
     // выделяем память под строку (максимум 255 символов + '\0')
     char* buffer = new char[256];
 
-    std::cout << "Введите предложение (до 255 символов):\n";
+    std::cout << "Введите предложение на английском (до 255 символов):\n";
     std::cin.getline(buffer, 256);
 
     // 1) считаем количество слов
@@ -22,6 +22,11 @@ void task1() {
         }
     }
     std::cout << "Количество слов: " << wordCount << "\n";
+
+    if (wordCount == 0) {
+        delete[] buffer;
+        return;
+    }
 
     // 2) находим, какое это слово «по счёту»
     int middle = (wordCount + 1) / 2;  // если слов чётное число, возьмём левое из двух «средних»
@@ -41,21 +46,21 @@ void task1() {
         }
         else if ((*p == ' ' || *(p + 1) == '\0') && inWord) {
             if (current == middle && end == nullptr) {
-                // если следующая позиция — '\0', включаем её в конец
-                end = (*p == ' ') ? p : p + 1;
+                end = (*p == ' ') ? p : p + 1;  // конец среднего слова
                 break;
             }
             inWord = false;
         }
     }
 
-    // 4) выводим то, что нашли
+    // 4) преобразуем среднее слово в заглавные и выводим всю строку
     if (start && end) {
-        std::cout << "Среднее слово: ";
-        for (char* p = start; p != end; ++p) {
-            std::cout << *p;
+        for (char* p = start; p < end; ++p) {
+            if (*p >= 'a' && *p <= 'z') {
+                *p = *p - ('a' - 'A');
+            }
         }
-        std::cout << "\n";
+        std::cout << "Результат: " << buffer << "\n";
     }
     else {
         std::cout << "Не удалось определить среднее слово.\n";
@@ -65,7 +70,7 @@ void task1() {
 }
 
 void task2() {
-    std::cout << "--- Task 2 ---\n";
+    std::cout << "\n--- Task 2 ---\n";
 }
 
 int main() {
