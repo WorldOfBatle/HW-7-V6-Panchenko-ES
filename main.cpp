@@ -80,15 +80,39 @@ void task1() {
 void task2() {
     std::cout << "\n--- Task 2: удаление символов c1 ---\n";
 
-    // выделяем память под строку
+    // 1) выделяем память под строку
     char* buffer = new char[256];
-    std::cout << "Введите строку (до 255 символов):\n";
+    std::cout << "Введите строку на английском (до 255 символов):\n";
     std::cin.getline(buffer, 256);
 
-    // читаем символ c1
+    // 2) читаем символ c1
     std::cout << "Введите символ для удаления (c1): ";
     char c1;
     std::cin >> c1;
+
+    // 3) проходим по строке двумя указателями и «перезаписываем» её без лишних c1
+    char* read = buffer;
+    char* write = buffer;
+    while (*read != '\0') {
+        if (*read == c1) {
+            // проверяем, окружён ли c1 слева и справа гласными
+            bool prevVowel = (read != buffer && isVowel(*(read - 1)));
+            bool nextVowel = (*(read + 1) != '\0' && isVowel(*(read + 1)));
+            if (!(prevVowel && nextVowel)) {
+                // не окружён — пропускаем этот символ
+                ++read;
+                continue;
+            }
+        }
+        //копируем его
+        *write = *read;
+        ++write;
+        ++read;
+    }
+    *write = '\0';
+
+    // 4) выводим результат
+    std::cout << "Результат: " << buffer << "\n";
 
     delete[] buffer;
 }
