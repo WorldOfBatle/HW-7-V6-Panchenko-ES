@@ -91,23 +91,45 @@ void task2() {
     std::cin >> c1;
 
     // 3) проходим по строке двумя указателями и «перезаписываем» её без лишних c1
-    char* read = buffer;
+    char* read  = buffer;
     char* write = buffer;
     while (*read != '\0') {
         if (*read == c1) {
             // проверяем, окружён ли c1 слева и справа гласными
-            bool prevVowel = (read != buffer && isVowel(*(read - 1)));
+            bool prevVowel = (read != buffer &&       isVowel(*(read - 1)));
             bool nextVowel = (*(read + 1) != '\0' && isVowel(*(read + 1)));
             if (!(prevVowel && nextVowel)) {
-                // не окружён — пропускаем этот символ
-                ++read;
+                // нашли «лишний» c1 — перевыделяем буфер без него
+                ptrdiff_t pos = read - buffer;           // индекс текущей позиции
+                // узнаём старую длину
+                size_t oldLen = 0;
+                while (buffer[oldLen] != '\0') ++oldLen;
+                size_t newLen = oldLen - 1;              // новая длина без одного символа
+
+                // создаём временный буфер
+                char* tmp = new char[newLen + 1];        // +1 для '\0'
+                // копируем всё до pos
+                for (size_t k = 0; k < (size_t)pos; ++k)
+                tmp[k] = buffer[k];
+                // копируем остаток после pos
+                for (size_t k = pos; k < newLen; ++k)
+                tmp[k] = buffer[k + 1];
+                tmp[newLen] = '\0';
+
+                // удаляем старый буфер и заменяем на новый
+                delete[] buffer;
+                buffer = tmp;
+
+                // сбрасываем оба указателя на позицию pos
+                read  = buffer + pos;
+                write = buffer + pos;
                 continue;
             }
         }
-        //копируем его
+        // копируем прочие символы
         *write = *read;
         ++write;
-        ++read;
+        ++write;
     }
     *write = '\0';
 
