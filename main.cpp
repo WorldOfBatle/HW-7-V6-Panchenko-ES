@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstddef>      // для size_t и ptrdiff_t
 
 // Вспомогательная функция: проверяет, гласная ли латинская буква
 bool isVowel(char c) {
@@ -116,11 +117,11 @@ void task2() {
                 tmp[k] = buffer[k + 1];
                 tmp[newLen] = '\0';
 
-                // удаляем старый буфер и заменяем на новый
+                // после перевыделения буфера:
                 delete[] buffer;
                 buffer = tmp;
 
-                // сбрасываем оба указателя на позицию pos
+                // возвращаемся на ту же позицию в обновлённом буфере
                 read  = buffer + pos;
                 write = buffer + pos;
                 continue;
@@ -129,7 +130,7 @@ void task2() {
         // копируем прочие символы
         *write = *read;
         ++write;
-        ++write;
+        ++read;
     }
     *write = '\0';
 
