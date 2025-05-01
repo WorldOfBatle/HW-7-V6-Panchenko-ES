@@ -66,24 +66,11 @@ bool isVowel(char c) {
 void task1() {
     std::cout << "\n--- Task 1: ввод предложения ---\n";
 
-    // выделяем память под строку (максимум 255 символов + '\0')
-    char* buffer = new char[256];
+    // 1) читаем полное предложение
+    char* buffer = readLine("Введите предложение на английском (до 255 символов):\n");
 
-    std::cout << "Введите предложение на английском (до 255 символов):\n";
-    std::cin.getline(buffer, 256);
-
-    // 1) считаем количество слов
-    int wordCount = 0;
-    bool inWord = false;
-    for (char* p = buffer; *p != '\0'; ++p) {
-        if (*p != ' ' && !inWord) {
-            inWord = true;
-            ++wordCount;
-        }
-        else if (*p == ' ' && inWord) {
-            inWord = false;
-        }
-    }
+    // 2) считаем количество слов
+    int wordCount = countWords(buffer);
     std::cout << "Количество слов: " << wordCount << "\n";
 
     if (wordCount == 0) {
@@ -91,41 +78,18 @@ void task1() {
         return;
     }
 
-    // 2) находим, какое это слово «по счёту»
-    int middle = (wordCount + 1) / 2;  // если слов чётное число, возьмём левое из двух «средних»
+    // 3) находим, какое это слово «по счёту»
+    int middle = (wordCount + 1) / 2;
 
-    // 3) снова проходим строку, чтобы запомнить границы этого слова
-    int current = 0;
-    char* start = nullptr;
-    char* end = nullptr;
-    inWord = false;
-    for (char* p = buffer; *p != '\0'; ++p) {
-        if (*p != ' ' && !inWord) {
-            inWord = true;
-            ++current;
-            if (current == middle) {
-                start = p;  // начало среднего слова
-            }
-        }
-        else if ((*p == ' ' || *(p + 1) == '\0') && inWord) {
-            if (current == middle && end == nullptr) {
-                end = (*p == ' ') ? p : p + 1;  // конец среднего слова
-                break;
-            }
-            inWord = false;
-        }
-    }
+    // 4) находим границы N-го слова
+    char *start, *end;
+    findWordBounds(buffer, middle, start, end);
 
-    // 4) преобразуем среднее слово в заглавные и выводим всю строку
+    // 5) переводим диапазон в верхний регистр и печатаем
     if (start && end) {
-        for (char* p = start; p < end; ++p) {
-            if (*p >= 'a' && *p <= 'z') {
-                *p = *p - ('a' - 'A');
-            }
-        }
+        uppercaseRange(start, end);
         std::cout << "Результат: " << buffer << "\n";
-    }
-    else {
+    } else {
         std::cout << "Не удалось определить среднее слово.\n";
     }
 
