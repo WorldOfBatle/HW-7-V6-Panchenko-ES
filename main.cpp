@@ -1,6 +1,14 @@
 #include <iostream>
 #include <cstddef>      // для size_t и ptrdiff_t
 
+// Читает строку (до 255 символов) в динамический буфер
+char* readLine(const char* message) {
+    std::cout << message;
+    char* buf = new char[256];
+    std::cin.getline(buf, 256);
+    return buf;
+}
+
 // Вспомогательная функция: проверяет, гласная ли латинская буква
 bool isVowel(char c) {
     // приводим к верхнему регистру
