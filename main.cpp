@@ -25,6 +25,27 @@ int countWords(const char* s) {
     return cnt;
 }
 
+// Находит в строке s N-е слово, возвращает через start/end (не включая end)
+void findWordBounds(char* s, int N, char*& start, char*& end) {
+    bool inWord = false;
+    int cur = 0;
+    start = end = nullptr;
+    for (char* p = s; *p; ++p) {
+        if (*p != ' ' && !inWord) {
+            inWord = true;
+            ++cur;
+            if (cur == N) start = p;
+        }
+        else if ((*p == ' ' || *(p+1) == '\0') && inWord) {
+            if (cur == N && !end) {
+                end = (*p == ' ') ? p : p+1;
+                return;
+            }
+            inWord = false;
+        }
+    }
+}
+
 // Вспомогательная функция: проверяет, гласная ли латинская буква
 bool isVowel(char c) {
     // приводим к верхнему регистру
