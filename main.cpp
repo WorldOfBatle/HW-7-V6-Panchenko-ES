@@ -111,6 +111,7 @@ void task1() {
     int wordCount = countWords(buffer);
     std::cout << "Количество слов: " << wordCount << "\n";
 
+    // если в строке нет слов — сразу выходим
     if (wordCount == 0) {
         delete[] buffer;
         return;
@@ -137,63 +138,19 @@ void task1() {
 void task2() {
     std::cout << "\n--- Task 2: удаление символов c1 ---\n";
 
-    // 1) выделяем память под строку
-    char* buffer = new char[256];
-    std::cout << "Введите строку на английском (до 255 символов):\n";
-    std::cin.getline(buffer, 256);
+    // 1) ввод исходной строки
+    char* buffer = readLine("Введите строку на английском (до 255 символов):\n");
 
-    // 2) читаем символ c1
-    std::cout << "Введите символ для удаления (c1): ";
-    char c1;
-    std::cin >> c1;
+    // 2) ввод символа для удаления
+    char c1 = readChar("Введите символ для удаления (c1): ");
 
-    // 3) проходим по строке двумя указателями и «перезаписываем» её без лишних c1
-    char* read  = buffer;
-    char* write = buffer;
-    while (*read != '\0') {
-        if (*read == c1) {
-            // проверяем, окружён ли c1 слева и справа гласными
-            bool prevVowel = (read != buffer &&       isVowel(*(read - 1)));
-            bool nextVowel = (*(read + 1) != '\0' && isVowel(*(read + 1)));
-            if (!(prevVowel && nextVowel)) {
-                // нашли «лишний» c1 — перевыделяем буфер без него
-                ptrdiff_t pos = read - buffer;           // индекс текущей позиции
-                // узнаём старую длину
-                size_t oldLen = 0;
-                while (buffer[oldLen] != '\0') ++oldLen;
-                size_t newLen = oldLen - 1;              // новая длина без одного символа
+    // 3) удаляем лишние символы и перезаписываем в тот же буфер
+    buffer = removeUnsurrounded(buffer, c1);
 
-                // создаём временный буфер
-                char* tmp = new char[newLen + 1];        // +1 для '\0'
-                // копируем всё до pos
-                for (size_t k = 0; k < (size_t)pos; ++k)
-                tmp[k] = buffer[k];
-                // копируем остаток после pos
-                for (size_t k = pos; k < newLen; ++k)
-                tmp[k] = buffer[k + 1];
-                tmp[newLen] = '\0';
+    // 4) выводим результат
+    std::cout << "Результат: " << buffer << "\n\n";
 
-                // после перевыделения буфера:
-                delete[] buffer;
-                buffer = tmp;
-
-                // возвращаемся на ту же позицию в обновлённом буфере
-                read  = buffer + pos;
-                write = buffer + pos;
-                continue;
-            }
-        }
-        // копируем прочие символы
-        *write = *read;
-        ++write;
-        ++read;
-    }
-    *write = '\0';
-
-    // выводим результат
-    std::cout << "Результат: " << buffer << "\n";
-
-    // удаляем единожды выделенный буфер
+    // 5) освобождаем память
     delete[] buffer;
 }
 
