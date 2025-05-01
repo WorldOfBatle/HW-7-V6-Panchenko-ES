@@ -72,35 +72,52 @@ char readChar(const char* message) {
     return c;
 }
 
+// Перевыделяет буфер s, удаляя символ на позиции pos,
+// возвращает указатель на новый буфер
+char* reallocateWithoutChar(char* s, size_t pos) {
+    // считаем старую длину
+    size_t len = 0;
+    while (s[len]) {
+        ++len;
+    }
+    // создаём новый буфер на len (удаляем 1 символ + место под '\0')
+    char* t = new char[len];
+    // копируем всё до pos
+    for (size_t i = 0; i < pos; ++i) {
+        t[i] = s[i];
+    }
+    // копируем остаток после pos
+    for (size_t i = pos; i < len - 1; ++i) {
+        t[i] = s[i + 1];
+    }
+    t[len - 1] = '\0';
+    // очищаем старый буфер и возвращаем новый
+    delete[] s;
+    return t;
+}
+
 // Удаляет из s все символы c1, не окружённые гласными, и возвращает обновлённый буфер
 char* removeUnsurrounded(char* s, char c1) {
-    char* read = s;
+    char* read  = s;
     char* write = s;
     while (*read) {
         if (*read == c1) {
-            bool pv = (read != s && isVowel(*(read-1)));
-            bool nv = (*(read+1) && isVowel(*(read+1)));
+            bool pv = (read != s && isVowel(*(read - 1)));
+            bool nv = (*(read + 1) && isVowel(*(read + 1)));
             if (!(pv && nv)) {
                 // перевыделяем строку без этого символа
                 ptrdiff_t pos = read - s;
-                // вычисляем длину строки
-                size_t len = 0;
-                while (s[len]) {
-                    ++len;
-                }
-                char* t = new char[len]; // len-1 + '\0'
-                for (size_t i=0; i<pos; ++i) t[i] = s[i];
-                for (size_t i=pos; i<len-1; ++i) t[i] = s[i+1];
-                t[len-1] = '\0';
-                delete[] s;
-                s = t;
-                read = s + pos;
+                s = reallocateWithoutChar(s, static_cast<size_t>(pos));
+                // возвращаем курсоры на ту же позицию в новом буфере
+                read  = s + pos;
                 write = s + pos;
                 continue;
             }
         }
+        // копируем остальные символы
         *write++ = *read++;
     }
+    // завершаем строку
     *write = '\0';
     return s;
 }
