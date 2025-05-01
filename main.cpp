@@ -9,6 +9,22 @@ char* readLine(const char* message) {
     return buf;
 }
 
+// Считает количество слов в строке (разделитель — пробел)
+int countWords(const char* s) {
+    bool inWord = false;
+    int cnt = 0;
+    for (const char* p = s; *p; ++p) {
+        if (*p != ' ' && !inWord) {
+            inWord = true;
+            ++cnt;
+        }
+        else if (*p == ' ' && inWord) {
+            inWord = false;
+        }
+    }
+    return cnt;
+}
+
 // Вспомогательная функция: проверяет, гласная ли латинская буква
 bool isVowel(char c) {
     // приводим к верхнему регистру
