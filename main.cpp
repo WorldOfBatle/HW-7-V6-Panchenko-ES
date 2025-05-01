@@ -46,6 +46,15 @@ void findWordBounds(char* s, int N, char*& start, char*& end) {
     }
 }
 
+// Переводит все буквы в диапазоне [start,end) в верхний регистр
+void uppercaseRange(char* start, char* end) {
+    for (char* p = start; p < end; ++p) {
+        if (*p >= 'a' && *p <= 'z') {
+            *p = *p - ('a' - 'A');
+        }
+    }
+}
+
 // Вспомогательная функция: проверяет, гласная ли латинская буква
 bool isVowel(char c) {
     // приводим к верхнему регистру
