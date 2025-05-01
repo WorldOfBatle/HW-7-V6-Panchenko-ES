@@ -72,6 +72,35 @@ char readChar(const char* message) {
     return c;
 }
 
+// Удаляет из s все символы c1, не окружённые гласными, и возвращает обновлённый буфер
+char* removeUnsurrounded(char* s, char c1) {
+    char* read = s;
+    char* write = s;
+    while (*read) {
+        if (*read == c1) {
+            bool pv = (read != s && isVowel(*(read-1)));
+            bool nv = (*(read+1) && isVowel(*(read+1)));
+            if (!(pv && nv)) {
+                // перевыделяем строку без этого символа
+                ptrdiff_t pos = read - s;
+                size_t len = 0; while (s[len]) ++len;
+                char* t = new char[len]; // len-1 + '\0'
+                for (size_t i=0; i<pos; ++i) t[i] = s[i];
+                for (size_t i=pos; i<len-1; ++i) t[i] = s[i+1];
+                t[len-1] = '\0';
+                delete[] s;
+                s = t;
+                read = s + pos;
+                write = s + pos;
+                continue;
+            }
+        }
+        *write++ = *read++;
+    }
+    *write = '\0';
+    return s;
+}
+
 void task1() {
     std::cout << "\n--- Task 1: ввод предложения ---\n";
 
