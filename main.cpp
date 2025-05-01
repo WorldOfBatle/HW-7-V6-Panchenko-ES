@@ -83,7 +83,11 @@ char* removeUnsurrounded(char* s, char c1) {
             if (!(pv && nv)) {
                 // перевыделяем строку без этого символа
                 ptrdiff_t pos = read - s;
-                size_t len = 0; while (s[len]) ++len;
+                // вычисляем длину строки
+                size_t len = 0;
+                while (s[len]) {
+                    ++len;
+                }
                 char* t = new char[len]; // len-1 + '\0'
                 for (size_t i=0; i<pos; ++i) t[i] = s[i];
                 for (size_t i=pos; i<len-1; ++i) t[i] = s[i+1];
