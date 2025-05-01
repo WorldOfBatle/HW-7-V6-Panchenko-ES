@@ -63,6 +63,15 @@ bool isVowel(char c) {
     return c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'Y';
 }
 
+// Читает один символ после вывода подсказки
+char readChar(const char* message) {
+    std::cout << message;
+    char c;
+    std::cin >> c;
+    std::cin.ignore(1, '\n');  // сбросим '\n' от предыдущего ввода
+    return c;
+}
+
 void task1() {
     std::cout << "\n--- Task 1: ввод предложения ---\n";
 
